@@ -12,3 +12,7 @@ node_modules/
 *.log
 .env
 .env.*
+
+# loose hero-test images in src root (keep hero.jpg / about.jpg lowercase)
+/src/*.JPG
+/src/*.JPEG
