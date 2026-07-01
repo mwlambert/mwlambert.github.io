@@ -436,6 +436,20 @@ function linkifyBullet(text, links, used) {
     .chart {
       margin: 4px 0 52px;
     }
+
+    /* Breakout: hero + gantt run wider than the 720px reading column.
+       Uses `translate` (not `transform`) so it doesn't fight the reveal
+       animation, which animates `transform`. */
+    .hero,
+    .chart {
+      /* 1156px = the nav/page frame (1200px max-width − 44px padding), so the
+         hero + gantt edges line up with the header. Drop to ~960px for a
+         narrower feel. */
+      width: min(1156px, calc(100vw - 44px));
+      margin-left: 50%;
+      translate: -50% 0;
+    }
+
     .chart-inner {
       position: relative;
       padding-bottom: 40px;

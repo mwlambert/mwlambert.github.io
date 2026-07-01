@@ -72,6 +72,7 @@ export const experience = [
       { label: 'CAPSTONE', url: 'https://rocketlabcorp.com/missions/lunar/' },
       { label: 'ESCAPADE', url: 'https://rocketlabcorp.com/missions/escapade/' },
       { label: 'Electron', url: 'https://rocketlabcorp.com/launch/electron/' },
+      { label: 'Pathstone', url: 'https://space.skyrocket.de/doc_sdat/pathstone.htm' },
     ],
     roles: [
       {
