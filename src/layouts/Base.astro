@@ -1,0 +1,147 @@
+---
+const { title, description } = Astro.props;
+const siteTitle = 'Michael Lambert';
+const pageTitle = title ? `${title} — ${siteTitle}` : siteTitle;
+
+// Edit these lines to change your contact links everywhere.
+const instagram = 'https://www.instagram.com/creampaua/';
+const linkedin = 'https://www.linkedin.com/in/michaelp78';
+const email = 'michael@lambertspace.com';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">{siteTitle}</a>
+      <nav class="nav">
+        <a href="/photography/">Photography</a>
+        <a href="/projects/">Projects</a>
+        <a href="/about/">About</a>
+        <a href={linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"></path>
+          </svg>
+        </a>
+        <a href={instagram} target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+        <a href={`mailto:${email}`}>Email</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <span>© {siteTitle}</span>
+    </footer>
+
+    <style is:global>
+      :root {
+        --ink: #141414;
+        --muted: #8a8a8a;
+        --bg: #ffffff;
+        --maxw: 1200px;
+        --gap: 14px;
+        /* Swap this one line to change the font everywhere (e.g. add a
+           @font-face above and set --font to its name). */
+        --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font);
+        font-size: 15px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .site-header {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 26px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        font-size: 22px;
+        font-weight: 300;
+        letter-spacing: 0.01em;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 13px;
+      }
+
+      .nav a {
+        color: var(--muted);
+        transition: color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .nav a:hover {
+        color: var(--ink);
+      }
+
+      main {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 10px 22px 60px;
+      }
+
+      .site-footer {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 40px 22px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,710 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { experience } from '../data/experience.js';
+import { education } from '../data/education.js';
+import { lanes, START, END, ticks } from '../data/timeline.js';
+import { getLogo, getWork } from '../lib/assets.js';
+// Swap src/hero.jpg for your own photo — the layout stays the same.
+import hero from '../hero.jpg';
+
+function initials(name) {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
+}
+
+// Position helpers for the gantt (decimal year -> % across the axis).
+const pct = (v) => ((v - START) / (END - START)) * 100;
+const yr = (v) => Math.floor(v);
+const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+---
+
+<Base description="Michael Lambert — hardware development engineer.">
+  <div class="cv">
+    <!-- HERO — landscape image with the intro overlaid. No name (implied by header). -->
+    <section class="hero reveal">
+      <!-- Swap src/hero.jpg for your own landscape photo. -->
+      <Image class="hero-bg" src={hero} alt="" widths={[720, 1440]} sizes="720px" />
+      <div class="hero-text">
+        <p class="role">Engineer & Entrepreneur</p>
+        <p class="loc">Paris, France</p>
+
+        <p class="lead">
+          Passionate about pointing hands-on engineering at real-world problems.
+        </p>
+
+        <p class="bio">
+          New Zealand–born, Paris-based. I've spent the last decade building
+          hardware in hard places: rocket propulsion and test systems at Rocket
+          Lab and MaiaSpace, and now a Direct Air Capture system at Norma.
+        </p>
+      </div>
+    </section>
+
+    <!-- LIFE TIMELINE (gantt) -->
+    <section class="chart reveal" aria-label="Timeline">
+      <div class="chart-inner">
+        <div class="grid">
+          {
+            ticks.map((y, i) => (
+              <span
+                class="tick"
+                style={`left:${pct(y)}%`}
+                data-edge={i === 0 ? 'start' : i === ticks.length - 1 ? 'end' : undefined}
+              >
+                <i />
+                <em>{'’' + String(y).slice(2)}</em>
+              </span>
+            ))
+          }
+        </div>
+        {
+          lanes.map((lane) => (
+            <div class="lane">
+              <span class="lane-name">{lane.name}</span>
+              <div class="track">
+                {lane.phases.map((p) => {
+                  const logo = getLogo(p.logo);
+                  const left = pct(p.start);
+                  const width = pct(Math.min(p.end, END)) - left;
+                  const delay = (left / 100) * 0.5;
+                  const Tag = p.href ? 'a' : 'div';
+                  return (
+                    <Tag
+                      class={`bar ${lane.name === 'Study' ? 'study' : 'work'}`}
+                      href={p.href}
+                      style={`left:${left}%; width:${width}%; --d:${delay}s; --bp:${p.pad ?? 3}px`}
+                      title={`${p.label} · ${yr(p.start)}–${p.end >= END ? 'now' : yr(p.end)}`}
+                    >
+                      <div class="bar-fill" />
+                      <span class="badge">
+                        {logo == null ? (
+                          initials(p.label)
+                        ) : typeof logo === 'string' ? (
+                          <img src={logo} alt={p.label} />
+                        ) : (
+                          <Image src={logo} alt={p.label} widths={[36, 72]} sizes="36px" />
+                        )}
+                      </span>
+                      {width > 12 && <span class="bar-label">{p.label}</span>}
+                    </Tag>
+                  );
+                })}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- EXPERIENCE TIMELINE -->
+    <section class="timeline">
+      <h2 class="section-title">Experience</h2>
+      {
+        experience.map((co) => {
+          const logo = getLogo(co.logo);
+          return (
+            <article class="entry reveal" id={slugify(co.company)}>
+              <div class="rail">
+                <span class="dot" />
+              </div>
+
+              <div class="body">
+                <header class="co">
+                  <div class="logo">
+                    {logo == null ? (
+                      <span class="monogram">{initials(co.company)}</span>
+                    ) : typeof logo === 'string' ? (
+                      <img src={logo} alt={co.company} />
+                    ) : (
+                      <Image src={logo} alt={co.company} widths={[44, 88]} sizes="44px" />
+                    )}
+                  </div>
+                  <div>
+                    <h2>
+                      {co.url ? (
+                        <a href={co.url} target="_blank" rel="noopener">
+                          {co.company}
+                        </a>
+                      ) : (
+                        co.company
+                      )}
+                    </h2>
+                    <span class="dur">{co.duration}</span>
+                  </div>
+                </header>
+
+                {co.intro ? (
+                  <p class="co-intro">{co.intro}</p>
+                ) : co.intro === '' ? (
+                  <p class="co-intro placeholder">[ Paragraph about your {co.company} work — to be added. ]</p>
+                ) : null}
+
+                <div class="roles">
+                  {co.roles.map((role) => (
+                    <div class="role-item">
+                      <h3>{role.title}</h3>
+                      <p class="meta">
+                        {role.dates}
+                        {role.location && ` · ${role.location}`}
+                      </p>
+                      {role.bullets.length > 0 && (
+                        <ul>
+                          {role.bullets.map((b) => (
+                            <li>{b}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {role.images.length > 0 && (
+                        <div class="work">
+                          {role.images
+                            .map((f) => getWork(f))
+                            .filter(Boolean)
+                            .map((img) => (
+                              <Image
+                                src={img}
+                                alt={`${co.company} work`}
+                                widths={[300, 600]}
+                                sizes="(max-width: 640px) 45vw, 220px"
+                                loading="lazy"
+                              />
+                            ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="education">
+      <h2 class="section-title">Education</h2>
+      {
+        education.map((edu) => {
+          const logo = getLogo(edu.logo);
+          return (
+            <article class="entry reveal" id={edu.id}>
+              <div class="rail">
+                <span class="dot" />
+              </div>
+              <div class="body">
+                <header class="co">
+                  <div class="logo">
+                    {logo == null ? (
+                      <span class="monogram">{initials(edu.school)}</span>
+                    ) : typeof logo === 'string' ? (
+                      <img src={logo} alt={edu.school} />
+                    ) : (
+                      <Image src={logo} alt={edu.school} widths={[44, 88]} sizes="44px" />
+                    )}
+                  </div>
+                  <div>
+                    <h2>
+                      {edu.url ? (
+                        <a href={edu.url} target="_blank" rel="noopener">
+                          {edu.school}
+                        </a>
+                      ) : (
+                        edu.school
+                      )}
+                    </h2>
+                    <span class="dur">{edu.dates}</span>
+                  </div>
+                </header>
+                <div class="roles">
+                  <div class="role-item">
+                    <ul>
+                      <li>{edu.program}</li>
+                      {(edu.bullets || []).map((b) => (
+                        <li>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </section>
+  </div>
+
+  <script>
+    // Scroll-reveal: fade + rise each section as it enters view. Vanilla, tiny,
+    // and disabled for anyone who prefers reduced motion.
+    const els = document.querySelectorAll('.reveal');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach((el) => el.classList.add('in-view'));
+    } else {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) {
+              en.target.classList.add('in-view');
+              io.unobserve(en.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+      els.forEach((el) => io.observe(el));
+    }
+  </script>
+
+  <style>
+    .cv {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* --- motion --- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* --- hero (landscape banner with overlaid intro) --- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      min-height: 340px;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: flex-end;
+      isolation: isolate;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    /* Scrim for legibility over any photo. */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.62),
+        rgba(0, 0, 0, 0.18) 55%,
+        rgba(0, 0, 0, 0.05)
+      );
+      z-index: 1;
+    }
+    .hero-text {
+      position: relative;
+      z-index: 2;
+      padding: 34px 34px 30px;
+      max-width: 560px;
+    }
+    .hero .role {
+      color: #fff;
+    }
+    .hero .loc {
+      color: rgba(255, 255, 255, 0.78);
+    }
+    .hero .lead {
+      color: #fff;
+    }
+    .hero .bio {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .hero .placeholder {
+      color: rgba(255, 255, 255, 0.72);
+    }
+    .role {
+      font-size: 24px;
+      font-weight: 300;
+      margin: 0;
+    }
+    .loc {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 4px 0 22px;
+    }
+    .lead {
+      font-size: 17px;
+      line-height: 1.7;
+      margin: 0 0 14px;
+    }
+    .bio {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #333;
+      margin: 0;
+    }
+    .links {
+      display: flex;
+      gap: 18px;
+      margin-top: 24px;
+      font-size: 13px;
+    }
+    .links a {
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .links a:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .placeholder {
+      color: #b3b3b3;
+      font-style: italic;
+    }
+
+    /* --- life timeline (gantt) --- */
+    .chart {
+      margin: 4px 0 52px;
+    }
+    .chart-inner {
+      position: relative;
+      padding-bottom: 22px;
+    }
+    .grid {
+      position: absolute;
+      left: 62px;
+      right: 0;
+      top: 0;
+      bottom: 22px;
+      pointer-events: none;
+    }
+    .tick {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+    }
+    .tick i {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: #e4e4e4;
+    }
+    .tick em {
+      position: absolute;
+      left: 0;
+      bottom: -19px;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-style: normal;
+      color: #9a9a9a;
+      white-space: nowrap;
+    }
+    .tick[data-edge='start'] em {
+      transform: none;
+    }
+    .tick[data-edge='end'] em {
+      transform: translateX(-100%);
+    }
+
+    .lane {
+      display: grid;
+      grid-template-columns: 62px 1fr;
+      align-items: center;
+      height: 46px;
+    }
+    .lane-name {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .track {
+      position: relative;
+      height: 100%;
+    }
+
+    .bar {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 30px;
+      min-width: 30px;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+    a.bar {
+      cursor: pointer;
+    }
+    a.bar:hover .bar-fill {
+      filter: brightness(1.12);
+    }
+    a.bar:hover .badge {
+      box-shadow: 0 0 0 1px #bdbdbd;
+    }
+    .bar-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 15px;
+      transform-origin: left center;
+      transform: scaleX(0);
+      transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition-delay: var(--d);
+    }
+    .chart.in-view .bar-fill {
+      transform: scaleX(1);
+    }
+    .bar.work .bar-fill {
+      background: var(--ink);
+    }
+    .bar.study .bar-fill {
+      background: #dcdcdc;
+    }
+
+    .badge {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 0 0 1px #e0e0e0;
+      padding: var(--bp, 3px);
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #777;
+      overflow: hidden;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      transition-delay: var(--d);
+    }
+    .chart.in-view .badge {
+      opacity: 1;
+    }
+    .badge :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .bar-label {
+      position: absolute;
+      left: 38px;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      transition-delay: var(--d);
+    }
+    .chart.in-view .bar-label {
+      opacity: 1;
+    }
+    .bar.work .bar-label {
+      color: #fff;
+    }
+    .bar.study .bar-label {
+      color: #555;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bar-fill {
+        transform: scaleX(1);
+        transition: none;
+      }
+      .badge,
+      .bar-label {
+        opacity: 1;
+        transition: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .bar-label {
+        display: none;
+      }
+    }
+
+    /* --- section headings --- */
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      font-weight: 500;
+      margin: 0 0 22px;
+    }
+
+    /* --- education (reuses the .entry timeline layout) --- */
+    .education {
+      margin-top: 44px;
+    }
+
+    /* jump-link scroll offsets */
+    .entry {
+      scroll-margin-top: 28px;
+    }
+
+    /* --- timeline --- */
+    .entry {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 20px;
+      padding-bottom: 46px;
+    }
+    .rail {
+      position: relative;
+    }
+    .rail::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 6px;
+      bottom: -46px;
+      width: 1px;
+      background: #e6e6e6;
+    }
+    .entry:last-child .rail::before {
+      display: none;
+    }
+    .dot {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--ink);
+    }
+
+    .co {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .monogram {
+      font-size: 15px;
+      font-weight: 500;
+      color: #9a9a9a;
+      letter-spacing: 0.03em;
+    }
+
+    .co h2 {
+      font-size: 17px;
+      font-weight: 500;
+      margin: 0;
+    }
+    .co h2 a {
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
+    }
+    .co h2 a:hover {
+      border-color: var(--ink);
+    }
+    .dur {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .co-intro {
+      margin: 12px 0 0 58px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .roles {
+      margin: 16px 0 0 58px;
+    }
+    .role-item {
+      margin-bottom: 20px;
+    }
+    .role-item:last-child {
+      margin-bottom: 0;
+    }
+    .role-item h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin: 0 0 2px;
+    }
+    .meta {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+    .role-item ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .role-item li {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .work {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .work :global(img) {
+      width: 220px;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .co-intro,
+      .roles {
+        margin-left: 0;
+      }
+      .work :global(img) {
+        width: 45%;
+      }
+    }
+  </style>
+</Base>

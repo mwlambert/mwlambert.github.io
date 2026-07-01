@@ -1,0 +1,62 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+// Swap src/about.jpg for your own portrait — the layout stays the same.
+import portrait from '../about.jpg';
+---
+
+<Base title="About">
+  <div class="about">
+    <div class="text">
+      <p>
+        Ko te pae tawhiti, whāia kia tata.<br />
+        Ko te pae tata whakamaua kia tina.
+      </p>
+      <p>
+        <a href="mailto:michael@lambertspace.com">michael@lambertspace.com</a>
+      </p>
+    </div>
+    <Image
+      class="portrait"
+      src={portrait}
+      alt="Michael Lambert"
+      widths={[320, 640]}
+      sizes="(max-width: 640px) 100vw, 320px"
+    />
+  </div>
+
+  <style>
+    .about {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .portrait {
+      width: 320px;
+      flex: 0 0 320px;
+      height: auto;
+    }
+    .text {
+      max-width: 420px;
+      font-size: 16px;
+      line-height: 1.7;
+      padding-top: 4px;
+    }
+    .text a {
+      border-bottom: 1px solid currentColor;
+    }
+
+    @media (max-width: 640px) {
+      .about {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .portrait {
+        width: 100%;
+        flex: none;
+      }
+    }
+  </style>
+</Base>
