@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Full-bleed: the black fills the whole tile so there's no white border in the tab. -->
-  <rect width="100" height="100" fill="#141414" />
-  <text x="50" y="51" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
-        font-size="66" font-weight="600" fill="#ffffff"
-        text-anchor="middle" dominant-baseline="central">M</text>
+  <!-- Full-bleed cream fills the whole tile — no white border in the tab. -->
+  <rect width="100" height="100" fill="#f4efe4" />
+  <text x="51" y="53" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="50" font-weight="700" fill="#171717"
+        text-anchor="middle" dominant-baseline="central" letter-spacing="-1.5">ML</text>
 </svg>
