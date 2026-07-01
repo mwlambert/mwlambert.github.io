@@ -1,14 +1,19 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { projects } from '../data/projects.js';
 import { getProjectImages } from '../lib/assets.js';
 
-// Resolve each project's photos (all images in its folder) up front.
-const items = projects.map((p) => ({
-  ...p,
-  shots: getProjectImages(p.folder),
-}));
+// Resolve each project's photos, plus a larger version for the lightbox.
+const items = await Promise.all(
+  projects.map(async (p) => {
+    const shots = getProjectImages(p.folder);
+    const full = await Promise.all(
+      shots.map((img) => getImage({ src: img, width: 1600, format: 'webp' })),
+    );
+    return { ...p, shots, full: full.map((f) => f.src) };
+  }),
+);
 ---
 
 <Base title="Projects">
@@ -28,14 +33,21 @@ const items = projects.map((p) => ({
           )}
           {p.shots.length > 0 && (
             <div class="shots">
-              {p.shots.map((img) => (
-                <Image
-                  src={img}
-                  alt={p.title}
-                  widths={[300, 600, 900]}
-                  sizes="(max-width: 640px) 45vw, 240px"
-                  loading="lazy"
-                />
+              {p.shots.map((img, i) => (
+                <button
+                  class="shot"
+                  type="button"
+                  data-full={p.full[i]}
+                  aria-label={`Enlarge ${p.title} photo`}
+                >
+                  <Image
+                    src={img}
+                    alt={p.title}
+                    widths={[300, 600, 900]}
+                    sizes="(max-width: 640px) 45vw, 240px"
+                    loading="lazy"
+                  />
+                </button>
               ))}
             </div>
           )}
@@ -44,7 +56,13 @@ const items = projects.map((p) => ({
     }
   </div>
 
+  <!-- click-to-enlarge overlay -->
+  <div class="lightbox" id="lightbox" hidden>
+    <img class="lightbox-img" src="" alt="" />
+  </div>
+
   <script>
+    // Scroll-reveal
     const els = document.querySelectorAll('.reveal');
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       els.forEach((el) => el.classList.add('in-view'));
@@ -62,6 +80,27 @@ const items = projects.map((p) => ({
       );
       els.forEach((el) => io.observe(el));
     }
+
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('.lightbox-img');
+    const openLb = (src) => {
+      lbImg.src = src;
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+    const closeLb = () => {
+      lb.hidden = true;
+      lbImg.removeAttribute('src');
+      document.body.style.overflow = '';
+    };
+    document
+      .querySelectorAll('.shot')
+      .forEach((btn) => btn.addEventListener('click', () => openLb(btn.dataset.full)));
+    lb.addEventListener('click', closeLb);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lb.hidden) closeLb();
+    });
   </script>
 
   <style>
@@ -125,11 +164,47 @@ const items = projects.map((p) => ({
       gap: 10px;
       margin-top: 20px;
     }
-    .shots :global(img) {
+    .shot {
+      display: block;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      background: none;
+      width: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .shot :global(img) {
       width: 100%;
       height: 150px;
       object-fit: cover;
-      border-radius: 4px;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+    .shot:hover :global(img) {
+      opacity: 0.9;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lightbox[hidden] {
+      display: none;
+    }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 2px;
     }
   </style>
 </Base>

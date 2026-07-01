@@ -32,4 +32,11 @@ export const lanes = [
       { label: 'Norma', logo: 'norma.png', start: 2025.4, end: 2026.5, href: '#norma', pad: 5 },
     ],
   },
+  {
+    name: 'Founded',
+    phases: [
+      // Set `labelLeft: true` to show the name to the left of the badge.
+      { label: 'Spencer St.', logo: 'spencer-st.png', start: 2024.92, end: 2026.5, href: '#spencer-st', pad: 4 },
+    ],
+  },
 ];

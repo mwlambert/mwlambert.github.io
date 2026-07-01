@@ -21,6 +21,44 @@ function initials(name) {
 const pct = (v) => ((v - START) / (END - START)) * 100;
 const yr = (v) => Math.floor(v);
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+// Pack a lane's phases into sub-rows so overlapping bars stack instead of clash.
+const ROW = 40; // px height per sub-row (30px bar + breathing room)
+function packLane(phases) {
+  const sorted = [...phases].sort((a, b) => a.start - b.start);
+  const rowEnds = [];
+  const placed = sorted.map((p) => {
+    let row = rowEnds.findIndex((end) => p.start >= end);
+    if (row === -1) {
+      row = rowEnds.length;
+      rowEnds.push(p.end);
+    } else {
+      rowEnds[row] = p.end;
+    }
+    return { ...p, row };
+  });
+  return { placed, rows: Math.max(1, rowEnds.length) };
+}
+
+// Link the FIRST mention of each label (e.g. "CAPSTONE") inside a bullet.
+// `used` is shared across a company's roles so only the first occurrence links.
+const escapeHtml = (s) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function linkifyBullet(text, links, used) {
+  let html = escapeHtml(text);
+  if (!links) return html;
+  for (const l of links) {
+    if (used.has(l.label)) continue;
+    const idx = html.indexOf(l.label);
+    if (idx === -1) continue;
+    used.add(l.label);
+    html =
+      html.slice(0, idx) +
+      `<a href="${l.url}" target="_blank" rel="noopener" class="inline-link">${l.label}</a>` +
+      html.slice(idx + l.label.length);
+  }
+  return html;
+}
 ---
 
 <Base description="Michael Lambert — hardware development engineer.">
@@ -63,21 +101,33 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
           }
         </div>
         {
-          lanes.map((lane) => (
-            <div class="lane">
+          lanes.map((lane) => {
+            const { placed, rows } = packLane(lane.phases);
+            return (
+            <div class="lane" style={`height:${rows * ROW}px`}>
               <span class="lane-name">{lane.name}</span>
               <div class="track">
-                {lane.phases.map((p) => {
+                {placed.map((p) => {
                   const logo = getLogo(p.logo);
                   const left = pct(p.start);
                   const width = pct(Math.min(p.end, END)) - left;
                   const delay = (left / 100) * 0.5;
+                  const top = p.row * ROW + 5; // centre the 30px bar in its 40px row
                   const Tag = p.href ? 'a' : 'div';
                   return (
+                    <>
+                    {p.labelLeft && (
+                      <span
+                        class="ext-label"
+                        style={`right: calc(${100 - left}% + 12px); top:${top}px; --d:${delay}s`}
+                      >
+                        {p.label}
+                      </span>
+                    )}
                     <Tag
                       class={`bar ${lane.name === 'Study' ? 'study' : 'work'}`}
                       href={p.href}
-                      style={`left:${left}%; width:${width}%; --d:${delay}s; --bp:${p.pad ?? 3}px`}
+                      style={`left:${left}%; width:${width}%; top:${top}px; --d:${delay}s; --bp:${p.pad ?? 3}px`}
                       title={`${p.label} · ${yr(p.start)}–${p.end >= END ? 'now' : yr(p.end)}`}
                     >
                       <div class="bar-fill" />
@@ -92,11 +142,13 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
                       </span>
                       {width > 12 && <span class="bar-label">{p.label}</span>}
                     </Tag>
+                    </>
                   );
                 })}
               </div>
             </div>
-          ))
+            );
+          })
         }
       </div>
     </section>
@@ -107,6 +159,7 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
       {
         experience.map((co) => {
           const logo = getLogo(co.logo);
+          const used = new Set(); // tracks which link labels have been linked
           return (
             <article class="entry reveal" id={slugify(co.company)}>
               <div class="rail">
@@ -155,7 +208,7 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
                       {role.bullets.length > 0 && (
                         <ul>
                           {role.bullets.map((b) => (
-                            <li>{b}</li>
+                            <li set:html={linkifyBullet(b, co.links, used)} />
                           ))}
                         </ul>
                       )}
@@ -385,14 +438,14 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
     }
     .chart-inner {
       position: relative;
-      padding-bottom: 22px;
+      padding-bottom: 40px;
     }
     .grid {
       position: absolute;
       left: 62px;
       right: 0;
       top: 0;
-      bottom: 22px;
+      bottom: 40px;
       pointer-events: none;
     }
     .tick {
@@ -411,7 +464,7 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
     .tick em {
       position: absolute;
       left: 0;
-      bottom: -19px;
+      bottom: -30px;
       transform: translateX(-50%);
       font-size: 11px;
       font-style: normal;
@@ -429,7 +482,7 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
       display: grid;
       grid-template-columns: 62px 1fr;
       align-items: center;
-      height: 46px;
+      /* height is set inline per lane = (sub-rows × ROW) */
     }
     .lane-name {
       font-size: 12px;
@@ -442,8 +495,6 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
 
     .bar {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
       height: 30px;
       min-width: 30px;
       overflow: hidden;
@@ -536,20 +587,40 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
       color: #555;
     }
 
+    /* label placed to the LEFT of a lone bar (outside its clipping) */
+    .ext-label {
+      position: absolute;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      font-size: 12px;
+      color: var(--ink);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      transition-delay: var(--d);
+    }
+    .chart.in-view .ext-label {
+      opacity: 1;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .bar-fill {
         transform: scaleX(1);
         transition: none;
       }
       .badge,
-      .bar-label {
+      .bar-label,
+      .ext-label {
         opacity: 1;
         transition: none;
       }
     }
 
     @media (max-width: 640px) {
-      .bar-label {
+      .bar-label,
+      .ext-label {
         display: none;
       }
     }
@@ -657,6 +728,16 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|
 
     .roles {
       margin: 16px 0 0 58px;
+    }
+    /* inline project / mission links inside bullets */
+    .role-item :global(.inline-link) {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid #bbb;
+      transition: border-color 0.15s ease;
+    }
+    .role-item :global(.inline-link:hover) {
+      border-color: var(--ink);
     }
     .role-item {
       margin-bottom: 20px;

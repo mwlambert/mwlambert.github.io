@@ -9,8 +9,25 @@
 
 export const experience = [
   {
+    company: 'Spencer St.',
+    logo: 'spencer-st.png',
+    url: 'https://reallifeontap.com',
+    duration: 'Dec 2024 – Present',
+    roles: [
+      {
+        title: 'Co-founder & Developer',
+        dates: 'December 2024 – Present · 1 yr 7 mos',
+        location: '',
+        bullets: [
+          'Building Prompt, a social media app — beta released on TestFlight.',
+        ],
+        images: [],
+      },
+    ],
+  },
+  {
     company: 'Norma',
-    logo: 'norma.png', // TODO: drop src/assets/logos/norma.png
+    logo: 'norma.png',
     url: 'https://norma.tech',
     duration: 'May 2025 – Present',
     roles: [
@@ -19,10 +36,10 @@ export const experience = [
         dates: 'May 2025 – Present · 1 yr 3 mos',
         location: 'Paris, France',
         bullets: [
-          'Leading mechanical design and development of an innovative Direct Air Capture (DAC) system, focusing on performance, cost, and scalability.',
-          'Drive end-to-end prototyping and hardware iteration, ensuring cost efficiency throughout the process.',
-          'Own mechanical simulation and system modeling, validating performance and reliability through rigorous testing.',
-          'Manage cross-functional timelines from concept to deployment, fostering collaboration across teams.',
+          'Leading the mechanical design and development of a novel Direct Air Capture (DAC) system, balancing performance, cost, and scalability.',
+          'Driving end-to-end prototyping and hardware iteration with a constant eye on cost.',
+          'Owning mechanical simulation and system modelling, validating performance and reliability through rigorous testing.',
+          'Managing cross-functional timelines from concept to deployment.',
         ],
         images: [], // e.g. ['norma-dac-1.jpg']
       },
@@ -30,7 +47,7 @@ export const experience = [
   },
   {
     company: 'MaiaSpace',
-    logo: 'maiaspace.png', // TODO: drop src/assets/logos/maiaspace.png
+    logo: 'maiaspace.png',
     url: 'https://www.maia-space.com',
     duration: 'Feb 2024 – May 2025',
     roles: [
@@ -39,8 +56,8 @@ export const experience = [
         dates: 'February 2024 – May 2025 · 1 yr 4 mos',
         location: '',
         bullets: [
-          'Design of the kick-stage propulsion system and RCS.',
-          'Design and simulation of the first- and second-stage RCS systems for ascent and landing phases.',
+          'Designed the kick-stage propulsion system and RCS.',
+          'Designed and simulated the first- and second-stage RCS systems for the ascent and landing phases.',
         ],
         images: [],
       },
@@ -48,18 +65,23 @@ export const experience = [
   },
   {
     company: 'Rocket Lab',
-    logo: 'rocket-lab.png', // TODO: drop src/assets/logos/rocket-lab.png
+    logo: 'rocket-lab.png',
     url: 'https://www.rocketlabusa.com',
     duration: '6 yrs 9 mos',
+    links: [
+      { label: 'CAPSTONE', url: 'https://rocketlabcorp.com/missions/lunar/' },
+      { label: 'ESCAPADE', url: 'https://rocketlabcorp.com/missions/escapade/' },
+      { label: 'Electron', url: 'https://rocketlabcorp.com/launch/electron/' },
+    ],
     roles: [
       {
         title: 'Senior Mechanical Development Engineer',
         dates: 'March 2021 – April 2023 · 2 yrs 2 mos',
         location: '',
         bullets: [
-          'Led development of the Photon fluid system for the CAPSTONE mission, achieving a qualified system within two years.',
-          'Contributed to the successful launch of the pathfinder mission on 28 June 2022; the spacecraft is currently in lunar orbit.',
-          "Led design of the RCS system for NASA's ESCAPADE mission (launched 2025), enhancing research capabilities for studying the martian magnetosphere.",
+          'Led development of the Photon fluid system for the CAPSTONE lunar mission, qualifying it within two years.',
+          "Contributed to CAPSTONE's successful launch on 28 June 2022; the spacecraft is now in lunar orbit.",
+          "Led design of the RCS system for NASA's ESCAPADE mission (launched 2025) to study the Martian magnetosphere.",
         ],
         images: [],
       },
@@ -69,8 +91,8 @@ export const experience = [
         location: 'Auckland, New Zealand',
         bullets: [
           "Led Electron integration and checkouts at Rocket Lab's Launch Complex 1 in Mahia — payload integration, high-level vehicle checkouts, and vehicle readiness.",
-          'From early 2020, led development of the Photon fluids and RCS systems for the CAPSTONE moon mission — fully developing and qualifying an RCS system and components in-house for testing on the Pathstone mission in March 2021.',
-          'Worked closely with a design engineer and technician to take the system from concept to flight-ready in 12 months, while developing the rest of the CAPSTONE fluids system, including fluidic components and propellant-management systems.',
+          'From early 2020, led development of the Photon fluids and RCS systems for the CAPSTONE lunar mission, developing and qualifying an RCS system and its components in-house for testing on the Pathstone mission in March 2021.',
+          'Worked closely with a design engineer and technician to take the system from concept to flight-ready in 12 months, alongside the rest of the CAPSTONE fluids system — fluidic components and propellant-management systems.',
         ],
         images: [],
       },
@@ -79,10 +101,10 @@ export const experience = [
         dates: 'November 2016 – February 2019 · 2 yrs 4 mos',
         location: '',
         bullets: [
-          'Conducted comprehensive testing on Electron hardware — structures, mechanisms, and fluid systems.',
+          'Conducted comprehensive testing of Electron hardware — structures, mechanisms, and fluid systems.',
           'Designed and built custom test hardware in a fast-paced environment to meet project needs.',
-          'Executed random-vibration and environmental-loads testing to ensure component reliability.',
-          'Collaborated on payload-deployment and fairing-jettison testing to enhance mission success.',
+          'Executed random-vibration and environmental-loads testing to verify component reliability.',
+          'Contributed to payload-deployment and fairing-jettison testing.',
         ],
         images: [],
       },
