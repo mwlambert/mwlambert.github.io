@@ -37,7 +37,12 @@ const email = 'michael@lambertspace.com';
             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
           </svg>
         </a>
-        <a href={`mailto:${email}`}>Email</a>
+        <a href={`mailto:${email}`} aria-label="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2.5" y="5" width="19" height="14" rx="2"></rect>
+            <path d="M3 6.5l9 6 9-6"></path>
+          </svg>
+        </a>
       </nav>
     </header>
 
