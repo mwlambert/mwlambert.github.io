@@ -637,6 +637,11 @@ function linkifyBullet(text, links, used) {
       .ext-label {
         display: none;
       }
+      /* A 14-year horizontal gantt can't read at phone width — hide it;
+         the Experience list below carries the same information. */
+      .chart {
+        display: none;
+      }
     }
 
     /* --- section headings --- */
