@@ -22,22 +22,11 @@ const pct = (v) => ((v - START) / (END - START)) * 100;
 const yr = (v) => Math.floor(v);
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-// Pack a lane's phases into sub-rows so overlapping bars stack instead of clash.
-const ROW = 40; // px height per sub-row (30px bar + breathing room)
+// One row per lane — overlapping bars are allowed to overlap (later one on top),
+// rather than stacking onto a new sub-row.
+const ROW = 40; // px lane height (30px bar + breathing room)
 function packLane(phases) {
-  const sorted = [...phases].sort((a, b) => a.start - b.start);
-  const rowEnds = [];
-  const placed = sorted.map((p) => {
-    let row = rowEnds.findIndex((end) => p.start >= end);
-    if (row === -1) {
-      row = rowEnds.length;
-      rowEnds.push(p.end);
-    } else {
-      rowEnds[row] = p.end;
-    }
-    return { ...p, row };
-  });
-  return { placed, rows: Math.max(1, rowEnds.length) };
+  return { placed: phases.map((p) => ({ ...p, row: 0 })), rows: 1 };
 }
 
 // Link the FIRST mention of each label (e.g. "CAPSTONE") inside a bullet.
@@ -140,7 +129,7 @@ function linkifyBullet(text, links, used) {
                           <Image src={logo} alt={p.label} widths={[36, 72]} sizes="36px" />
                         )}
                       </span>
-                      {width > 12 && <span class="bar-label">{p.label}</span>}
+                      {width > 16 && <span class="bar-label">{p.label}</span>}
                     </Tag>
                     </>
                   );

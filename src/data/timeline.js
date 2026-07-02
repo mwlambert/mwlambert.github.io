@@ -4,7 +4,7 @@
 // in src/assets/logos/. Until a logo is dropped in, a monogram badge shows.
 
 export const START = 2012;
-export const END = 2026.5; // ~now
+export const END = 2026.9; // a little past "now" so present-day bars keep going
 
 export const ticks = [2012, 2014, 2016, 2018, 2020, 2022, 2024, 2026];
 
@@ -29,14 +29,15 @@ export const lanes = [
       // { label: 'HV Power', logo: 'hv-power.png', start: 2014.85, end: 2015.9 },
       { label: 'Rocket Lab', logo: 'rocket-lab.png', start: 2016.6, end: 2023.3, href: '#rocket-lab', pad: 5 },
       { label: 'MaiaSpace', logo: 'maiaspace.png', start: 2024.1, end: 2025.4, href: '#maiaspace', pad: 5 },
-      { label: 'Norma', logo: 'norma.png', start: 2025.4, end: 2026.5, href: '#norma', pad: 5 },
+      { label: 'Norma', logo: 'norma.png', start: 2025.4, end: 2026.55, href: '#norma', pad: 5 },
     ],
   },
   {
     name: 'Founded',
     phases: [
       // Set `labelLeft: true` to show the name to the left of the badge.
-      { label: 'Spencer St.', logo: 'spencer-st.png', start: 2024.92, end: 2026.5, href: '#spencer-st', pad: 4 },
+      { label: 'Spencer St.', logo: 'spencer-st.png', start: 2024.92, end: 2026.9, href: '#spencer-st', pad: 4 },
+      { label: 'P78 Space', logo: 'p78-space.png', start: 2026.62, end: 2026.9, href: '#p78-space' },
     ],
   },
 ];

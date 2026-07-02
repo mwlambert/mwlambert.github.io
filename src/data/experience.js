@@ -10,6 +10,21 @@
 
 export const experience = [
   {
+    company: 'P78 Space',
+    logo: 'p78-space.png', // drop src/assets/logos/p78-space.png (monogram until then)
+    url: 'https://p78space.com',
+    duration: 'Aug 2026 – Present',
+    roles: [
+      {
+        title: 'Co-founder',
+        dates: 'August 2026 – Present',
+        location: '',
+        bullets: ['Developing modern propulsion.'],
+        images: [],
+      },
+    ],
+  },
+  {
     company: 'Spencer St.',
     logo: 'spencer-st.png',
     url: '',
@@ -31,18 +46,18 @@ export const experience = [
     company: 'Norma',
     logo: 'norma.png',
     url: 'https://norma.tech',
-    duration: 'May 2025 – Present',
+    duration: 'May 2025 – Jul 2026',
     roles: [
       {
         title: 'Senior Mechanical Engineer',
-        dates: 'May 2025 – Present · 1 yr 3 mos',
+        dates: 'May 2025 – July 2026 · 1 yr 2 mos',
         location: 'Paris, France',
         bullets: [
-          'Leading the mechanical design and development of a novel Direct Air Capture (DAC) system.',
-          'Driving end-to-end prototyping and hardware iteration.',
-          'Performing mechanical simulation and system modelling, validating performance and reliability through testing.',
-          'Managing cross-functional timelines from concept to deployment.',
-          'Developing in-house tools for experiment automation and data analysis',
+          'Led the mechanical design and development of a novel Direct Air Capture (DAC) system.',
+          'Drove end-to-end prototyping and hardware iteration.',
+          'Performed mechanical simulation and system modelling, validating performance and reliability through testing.',
+          'Managed cross-functional timelines from concept to deployment.',
+          'Developed in-house tools for experiment automation and data analysis.',
         ],
         images: [], // e.g. ['norma-dac-1.jpg']
       },
