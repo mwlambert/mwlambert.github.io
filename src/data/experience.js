@@ -19,7 +19,7 @@ export const experience = [
         title: 'Co-founder',
         dates: 'August 2026 – Present',
         location: '',
-        bullets: ['Developing modern propulsion.'],
+        bullets: ['Developing modern propulsion for the next generation of spaceflight.'],
         images: [],
       },
     ],
