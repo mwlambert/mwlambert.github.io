@@ -1,6 +1,4 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-
 const { title, description } = Astro.props;
 const siteTitle = 'Michael Lambert';
 const pageTitle = title ? `${title} — ${siteTitle}` : siteTitle;
@@ -41,8 +39,6 @@ const email = 'michael@lambertspace.com';
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={desc} />
     <meta name="twitter:image" content={ogImage} />
-
-    <ViewTransitions />
   </head>
   <body>
     <header class="site-header">
@@ -234,8 +230,7 @@ const email = 'michael@lambertspace.com';
     </style>
 
     <script>
-      // Mobile nav dropdown toggle. Runs on first load AND after each
-      // view-transition navigation (astro:page-load fires for both).
+      // Mobile nav dropdown toggle.
       function initNav() {
         const toggle = document.querySelector('.nav-toggle');
         const nav = document.getElementById('nav');
@@ -252,7 +247,7 @@ const email = 'michael@lambertspace.com';
           setOpen(false);
         });
       }
-      document.addEventListener('astro:page-load', initNav);
+      initNav();
     </script>
   </body>
 </html>

@@ -70,7 +70,6 @@ const items = await Promise.all(
   </div>
 
   <script>
-    // Re-runs on first load and after each view-transition navigation.
     function initProjects() {
       // Scroll-reveal
       const els = document.querySelectorAll('.reveal');
@@ -113,7 +112,7 @@ const items = await Promise.all(
         if (e.key === 'Escape' && !lb.hidden) closeLb();
       });
     }
-    document.addEventListener('astro:page-load', initProjects);
+    initProjects();
   </script>
 
   <style>

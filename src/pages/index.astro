@@ -291,8 +291,7 @@ function linkifyBullet(text, links, used) {
 
   <script>
     // Scroll-reveal: fade + rise each section as it enters view. Vanilla, tiny,
-    // and disabled for anyone who prefers reduced motion. Re-runs after each
-    // view-transition navigation via astro:page-load.
+    // and disabled for anyone who prefers reduced motion.
     function initReveal() {
       const els = document.querySelectorAll('.reveal');
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -312,7 +311,7 @@ function linkifyBullet(text, links, used) {
       );
       els.forEach((el) => io.observe(el));
     }
-    document.addEventListener('astro:page-load', initReveal);
+    initReveal();
   </script>
 
   <style>
