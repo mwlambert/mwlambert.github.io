@@ -11,7 +11,8 @@ export const experience = [
   {
     company: 'Spencer St.',
     logo: 'spencer-st.png',
-    url: 'https://reallifeontap.com',
+    url: '',
+    links: [{ label: 'Prompt', url: 'https://reallifeontap.com' }],
     duration: 'Dec 2024 – Present',
     roles: [
       {
