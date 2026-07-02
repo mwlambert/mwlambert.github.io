@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import { experience } from '../data/experience.js';
 import { education } from '../data/education.js';
 import { lanes, START, END, ticks } from '../data/timeline.js';
-import { getLogo, getWork } from '../lib/assets.js';
+import { getLogo, getWorkImages } from '../lib/assets.js';
 // Swap src/hero.jpg for your own photo — the layout stays the same.
 import hero from '../hero.jpg';
 
@@ -160,6 +160,7 @@ function linkifyBullet(text, links, used) {
         experience.map((co) => {
           const logo = getLogo(co.logo);
           const used = new Set(); // tracks which link labels have been linked
+          const workImages = getWorkImages(slugify(co.company)); // src/assets/work/<slug>/
           return (
             <article class="entry reveal" id={slugify(co.company)}>
               <div class="rail">
@@ -212,25 +213,22 @@ function linkifyBullet(text, links, used) {
                           ))}
                         </ul>
                       )}
-                      {role.images.length > 0 && (
-                        <div class="work">
-                          {role.images
-                            .map((f) => getWork(f))
-                            .filter(Boolean)
-                            .map((img) => (
-                              <Image
-                                src={img}
-                                alt={`${co.company} work`}
-                                widths={[300, 600]}
-                                sizes="(max-width: 640px) 45vw, 220px"
-                                loading="lazy"
-                              />
-                            ))}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
+                {workImages.length > 0 && (
+                  <div class="work">
+                    {workImages.map((img) => (
+                      <Image
+                        src={img}
+                        alt={`${co.company} work`}
+                        widths={[300, 600]}
+                        sizes="(max-width: 640px) 45vw, 220px"
+                        loading="lazy"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </article>
           );
@@ -293,11 +291,14 @@ function linkifyBullet(text, links, used) {
 
   <script>
     // Scroll-reveal: fade + rise each section as it enters view. Vanilla, tiny,
-    // and disabled for anyone who prefers reduced motion.
-    const els = document.querySelectorAll('.reveal');
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      els.forEach((el) => el.classList.add('in-view'));
-    } else {
+    // and disabled for anyone who prefers reduced motion. Re-runs after each
+    // view-transition navigation via astro:page-load.
+    function initReveal() {
+      const els = document.querySelectorAll('.reveal');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        els.forEach((el) => el.classList.add('in-view'));
+        return;
+      }
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((en) => {
@@ -311,6 +312,7 @@ function linkifyBullet(text, links, used) {
       );
       els.forEach((el) => io.observe(el));
     }
+    document.addEventListener('astro:page-load', initReveal);
   </script>
 
   <style>
@@ -786,24 +788,26 @@ function linkifyBullet(text, links, used) {
     }
 
     .work {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px;
-      margin-top: 12px;
+      margin: 16px 0 0 58px;
     }
     .work :global(img) {
-      width: 220px;
-      height: auto;
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
       border-radius: 4px;
     }
 
     @media (max-width: 640px) {
       .co-intro,
-      .roles {
+      .roles,
+      .work {
         margin-left: 0;
       }
-      .work :global(img) {
-        width: 45%;
+      .work {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>

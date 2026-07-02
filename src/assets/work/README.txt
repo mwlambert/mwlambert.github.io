@@ -1,1 +1,3 @@
-Drop work / project photos here, then list their filenames in a role's `images` array in src/data/experience.js
+Work photos go in per-company subfolders here, named to match the company slug:
+  rocket-lab/  norma/  maiaspace/  spencer-st/
+Drop images in the right folder and git push — no filename lists needed.

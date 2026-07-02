@@ -1,7 +1,8 @@
 // Personal projects. Most-recent first.
 //
-// To add a project: add an entry here. For photos, drop images into
-// src/assets/projects/ and list their filenames in `images`. Then git push.
+// To add a project: add an entry here. Optional `url` makes the title a link.
+// For photos, drop images into src/assets/projects/<folder>/ and set `folder`
+// to that folder name — every image inside loads. Then git push.
 
 export const projects = [
   {
@@ -13,6 +14,7 @@ export const projects = [
   },
   {
     title: 'Mongol Rally',
+    url: 'https://www.theadventurists.com/mongol-rally/',
     dates: 'Jul 2018 – Aug 2018',
     description:
       'An intercontinental car rally that begins in Europe and ends in Ulan-Ude, Russia. Three fundamental rules govern it:',

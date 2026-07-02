@@ -7,7 +7,7 @@ const logos = import.meta.glob(
   { eager: true },
 );
 const work = import.meta.glob(
-  '../assets/work/*.{png,jpg,jpeg,webp,avif,PNG,JPG,JPEG,WEBP,AVIF}',
+  '../assets/work/**/*.{png,jpg,jpeg,webp,avif,PNG,JPG,JPEG,WEBP,AVIF}',
   { eager: true },
 );
 const projects = import.meta.glob(
@@ -23,23 +23,28 @@ function byFilename(files) {
   return map;
 }
 
-const logoMap = byFilename(logos);
-const workMap = byFilename(work);
+// Group images by their immediate subfolder (e.g. work/rocket-lab/*, sorted).
+function byFolder(files, section) {
+  const re = new RegExp(`/${section}/([^/]+)/([^/]+)$`);
+  const folders = {};
+  for (const path in files) {
+    const m = path.match(re);
+    if (!m) continue;
+    const [, folder, file] = m;
+    (folders[folder] ||= []).push({ file, image: files[path].default });
+  }
+  for (const folder in folders) {
+    folders[folder].sort((a, b) => a.file.localeCompare(b.file));
+  }
+  return folders;
+}
 
-// Project images are grouped by their subfolder under src/assets/projects/.
-// A project just points at a folder; every image inside it loads, sorted by name.
-const projectFolders = {};
-for (const path in projects) {
-  const m = path.match(/\/projects\/([^/]+)\/([^/]+)$/);
-  if (!m) continue;
-  const [, folder, file] = m;
-  (projectFolders[folder] ||= []).push({ file, image: projects[path].default });
-}
-for (const folder in projectFolders) {
-  projectFolders[folder].sort((a, b) => a.file.localeCompare(b.file));
-}
+const logoMap = byFilename(logos);
+const workFolders = byFolder(work, 'work');
+const projectFolders = byFolder(projects, 'projects');
 
 export const getLogo = (file) => (file && logoMap[file]) || null;
-export const getWork = (file) => (file && workMap[file]) || null;
+export const getWorkImages = (folder) =>
+  folder && workFolders[folder] ? workFolders[folder].map((x) => x.image) : [];
 export const getProjectImages = (folder) =>
   folder && projectFolders[folder] ? projectFolders[folder].map((x) => x.image) : [];

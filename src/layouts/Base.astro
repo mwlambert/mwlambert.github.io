@@ -1,7 +1,14 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
+
 const { title, description } = Astro.props;
 const siteTitle = 'Michael Lambert';
 const pageTitle = title ? `${title} — ${siteTitle}` : siteTitle;
+const desc =
+  description ||
+  'Michael Lambert — engineer & entrepreneur. Hardware development across space, launch, and climate.';
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+const ogImage = Astro.site ? new URL('/og.jpg', Astro.site).href : '/og.jpg';
 
 // Edit these lines to change your contact links everywhere.
 const instagram = 'https://www.instagram.com/creampaua/';
@@ -15,10 +22,27 @@ const email = 'michael@lambertspace.com';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
-    {description && <meta name="description" content={description} />}
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Social preview (Open Graph + Twitter) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={desc} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <ViewTransitions />
   </head>
   <body>
     <header class="site-header">
@@ -210,10 +234,12 @@ const email = 'michael@lambertspace.com';
     </style>
 
     <script>
-      // Mobile nav dropdown toggle
-      const toggle = document.querySelector('.nav-toggle');
-      const nav = document.getElementById('nav');
-      if (toggle && nav) {
+      // Mobile nav dropdown toggle. Runs on first load AND after each
+      // view-transition navigation (astro:page-load fires for both).
+      function initNav() {
+        const toggle = document.querySelector('.nav-toggle');
+        const nav = document.getElementById('nav');
+        if (!toggle || !nav) return;
         const setOpen = (open) => {
           nav.classList.toggle('open', open);
           toggle.setAttribute('aria-expanded', String(open));
@@ -226,6 +252,7 @@ const email = 'michael@lambertspace.com';
           setOpen(false);
         });
       }
+      document.addEventListener('astro:page-load', initNav);
     </script>
   </body>
 </html>

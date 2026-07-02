@@ -1,11 +1,12 @@
 // Your work history. Most-recent first.
 //
 // To add / edit a role: change an entry here. To add a company logo, drop an
-// image into src/assets/logos/ and set `logo` to its filename. To add work
-// photos to a role, drop images into src/assets/work/ and list the filenames in
-// that role's `images` array. Then git push. No layout edits needed.
+// image into src/assets/logos/ and set `logo` to its filename.
 //
-// Anything marked TODO is a placeholder for you to fill in.
+// WORK PHOTOS: just drop images into src/assets/work/<company-slug>/ — e.g.
+// src/assets/work/rocket-lab/, /norma/, /maiaspace/. Every image in that folder
+// shows as a strip under the company. No need to list filenames. Then git push.
+// (The `images: []` fields below are no longer used.)
 
 export const experience = [
   {
@@ -37,10 +38,11 @@ export const experience = [
         dates: 'May 2025 – Present · 1 yr 3 mos',
         location: 'Paris, France',
         bullets: [
-          'Leading the mechanical design and development of a novel Direct Air Capture (DAC) system, balancing performance, cost, and scalability.',
-          'Driving end-to-end prototyping and hardware iteration with a constant eye on cost.',
-          'Owning mechanical simulation and system modelling, validating performance and reliability through rigorous testing.',
+          'Leading the mechanical design and development of a novel Direct Air Capture (DAC) system.',
+          'Driving end-to-end prototyping and hardware iteration.',
+          'Performing mechanical simulation and system modelling, validating performance and reliability through testing.',
           'Managing cross-functional timelines from concept to deployment.',
+          'Developing in-house tools for experiment automation and data analysis',
         ],
         images: [], // e.g. ['norma-dac-1.jpg']
       },
