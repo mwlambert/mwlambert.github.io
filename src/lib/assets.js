@@ -23,9 +23,10 @@ function byFilename(files) {
   return map;
 }
 
-// Group images by their immediate subfolder (e.g. work/rocket-lab/*, sorted).
+// Group images by their subfolder path under the section, sorted by filename.
+// Handles nesting, e.g. work/rocket-lab/senior-mechanical-development-engineer/*.
 function byFolder(files, section) {
-  const re = new RegExp(`/${section}/([^/]+)/([^/]+)$`);
+  const re = new RegExp(`/${section}/(.+)/([^/]+)$`);
   const folders = {};
   for (const path in files) {
     const m = path.match(re);

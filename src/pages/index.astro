@@ -160,7 +160,6 @@ function linkifyBullet(text, links, used) {
         experience.map((co) => {
           const logo = getLogo(co.logo);
           const used = new Set(); // tracks which link labels have been linked
-          const workImages = getWorkImages(slugify(co.company)); // src/assets/work/<slug>/
           return (
             <article class="entry reveal" id={slugify(co.company)}>
               <div class="rail">
@@ -199,36 +198,42 @@ function linkifyBullet(text, links, used) {
                 ) : null}
 
                 <div class="roles">
-                  {co.roles.map((role) => (
-                    <div class="role-item">
-                      <h3>{role.title}</h3>
-                      <p class="meta">
-                        {role.dates}
-                        {role.location && ` · ${role.location}`}
-                      </p>
-                      {role.bullets.length > 0 && (
-                        <ul>
-                          {role.bullets.map((b) => (
-                            <li set:html={linkifyBullet(b, co.links, used)} />
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
+                  {co.roles.map((role) => {
+                    // photos live in src/assets/work/<company>/<role>/
+                    const roleImages = getWorkImages(
+                      `${slugify(co.company)}/${slugify(role.title)}`,
+                    );
+                    return (
+                      <div class="role-item">
+                        <h3>{role.title}</h3>
+                        <p class="meta">
+                          {role.dates}
+                          {role.location && ` · ${role.location}`}
+                        </p>
+                        {role.bullets.length > 0 && (
+                          <ul>
+                            {role.bullets.map((b) => (
+                              <li set:html={linkifyBullet(b, co.links, used)} />
+                            ))}
+                          </ul>
+                        )}
+                        {roleImages.length > 0 && (
+                          <div class="work">
+                            {roleImages.map((img) => (
+                              <Image
+                                src={img}
+                                alt={`${co.company} — ${role.title}`}
+                                widths={[300, 600]}
+                                sizes="(max-width: 640px) 45vw, 220px"
+                                loading="lazy"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-                {workImages.length > 0 && (
-                  <div class="work">
-                    {workImages.map((img) => (
-                      <Image
-                        src={img}
-                        alt={`${co.company} work`}
-                        widths={[300, 600]}
-                        sizes="(max-width: 640px) 45vw, 220px"
-                        loading="lazy"
-                      />
-                    ))}
-                  </div>
-                )}
               </div>
             </article>
           );
@@ -513,7 +518,7 @@ function linkifyBullet(text, links, used) {
       height: 30px;
       min-width: 30px;
       overflow: hidden;
-      border-radius: 15px;
+      border-radius: 6px;
     }
     a.bar {
       cursor: pointer;
@@ -527,7 +532,7 @@ function linkifyBullet(text, links, used) {
     .bar-fill {
       position: absolute;
       inset: 0;
-      border-radius: 15px;
+      border-radius: 6px;
       transform-origin: left center;
       transform: scaleX(0);
       transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -550,10 +555,9 @@ function linkifyBullet(text, links, used) {
       transform: translateY(-50%);
       width: 30px;
       height: 30px;
-      border-radius: 8px;
+      border-radius: 6px;
       background: #fff;
       box-shadow: 0 0 0 1px #e0e0e0;
-      padding: var(--bp, 3px);
       box-sizing: border-box;
       display: flex;
       align-items: center;
@@ -571,8 +575,11 @@ function linkifyBullet(text, links, used) {
       opacity: 1;
     }
     .badge :global(img) {
-      width: 100%;
-      height: 100%;
+      /* Fit fully inside the badge — cannot overflow, so it never gets clipped. */
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
       object-fit: contain;
     }
 
@@ -790,7 +797,7 @@ function linkifyBullet(text, links, used) {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px;
-      margin: 16px 0 0 58px;
+      margin: 12px 0 4px;
     }
     .work :global(img) {
       width: 100%;

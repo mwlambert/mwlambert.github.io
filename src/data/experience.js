@@ -3,9 +3,9 @@
 // To add / edit a role: change an entry here. To add a company logo, drop an
 // image into src/assets/logos/ and set `logo` to its filename.
 //
-// WORK PHOTOS: just drop images into src/assets/work/<company-slug>/ — e.g.
-// src/assets/work/rocket-lab/, /norma/, /maiaspace/. Every image in that folder
-// shows as a strip under the company. No need to list filenames. Then git push.
+// WORK PHOTOS: drop images into src/assets/work/<company>/<role>/ — e.g.
+// src/assets/work/rocket-lab/senior-mechanical-development-engineer/. Every image
+// there shows as a grid under that role. No filename list needed. Then git push.
 // (The `images: []` fields below are no longer used.)
 
 export const experience = [
@@ -21,7 +21,7 @@ export const experience = [
         dates: 'December 2024 – Present · 1 yr 7 mos',
         location: '',
         bullets: [
-          'Building Prompt, a social media app — beta released on TestFlight.',
+          'Building Prompt, a social, social media app — beta released on TestFlight.',
         ],
         images: [],
       },
