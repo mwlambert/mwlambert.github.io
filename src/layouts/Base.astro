@@ -239,9 +239,11 @@ const email = 'michael@lambertspace.com';
 
       /* --- mobile nav: collapse into a dropdown menu --- */
       @media (max-width: 640px) {
-        .site-header {
-          position: relative;
-        }
+        /* Keep the header absolute (overlaying the hero) like desktop, so the
+           homepage hero runs behind the nav on phones too. Absolute also keeps
+           it out of the body flex-column, so brand + hamburger stay
+           edge-aligned rather than centring together. The dropdown menu still
+           anchors to it (it's a positioned ancestor). */
         .nav-toggle {
           display: inline-flex;
         }

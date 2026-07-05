@@ -697,6 +697,23 @@ function linkifyBullet(text, links, used) {
       .chart {
         display: none;
       }
+      /* Stack the stats into an aligned 2×2 grid instead of a wrapping row. */
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+      }
+      /* Give the name a dark band to sit on: drop the photo down and dissolve
+         its top edge into the hero's dark background so the brand isn't
+         half-over the bright planet limb. */
+      .hero {
+        background: var(--bg);
+      }
+      .hero-bg {
+        top: 52px;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px);
+        mask-image: linear-gradient(to bottom, transparent, #000 48px);
+      }
     }
 
     /* --- section headings --- */
@@ -860,7 +877,8 @@ function linkifyBullet(text, links, used) {
         margin-left: 0;
       }
       .work {
-        grid-template-columns: repeat(2, 1fr);
+        /* keep the curated row of 3 intact on phones (was 2 → left a 2+1 orphan) */
+        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
