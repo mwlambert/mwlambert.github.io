@@ -59,7 +59,7 @@ function linkifyBullet(text, links, used) {
       <div class="hero-text">
         <p class="eyebrow">Engineer & Entrepreneur · Paris</p>
         <h1 class="headline">
-          Building hardware for the next<br />generation of space exploration
+          Building hardware for<br class="brk-m" /> the next<br class="brk-d" /> generation of<br class="brk-m" /> space exploration
         </h1>
         <ul class="stats">
           <li><b>30</b> rockets launched</li>
@@ -417,6 +417,11 @@ function linkifyBullet(text, links, used) {
       margin: 0 0 20px;
       max-width: 560px; /* drives the even two-line wrap */
     }
+    /* Controlled line breaks: desktop breaks once (after "next"); mobile
+       breaks into three (after "for" and "of"). */
+    .brk-m {
+      display: none;
+    }
     .stats {
       list-style: none;
       padding: 0;
@@ -702,6 +707,13 @@ function linkifyBullet(text, links, used) {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px 20px;
+      }
+      /* Swap the headline break pattern for the 3-line mobile split. */
+      .brk-m {
+        display: inline;
+      }
+      .brk-d {
+        display: none;
       }
       /* Give the name a dark band to sit on: drop the photo down and dissolve
          its top edge into the hero's dark background so the brand isn't
