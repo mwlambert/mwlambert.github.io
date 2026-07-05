@@ -6,6 +6,8 @@ const desc =
   description ||
   'Michael Lambert — engineer & entrepreneur. Hardware development across space, launch, and climate.';
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+// The homepage nav sits over the dark hero image, so it always needs light text.
+const isHome = Astro.url.pathname === '/';
 const ogImage = Astro.site ? new URL('/og.jpg', Astro.site).href : '/og.jpg';
 
 // Edit these lines to change your contact links everywhere.
@@ -15,7 +17,7 @@ const email = 'michael@lambertspace.com';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme={isHome ? 'dark' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,7 +43,7 @@ const email = 'michael@lambertspace.com';
     <meta name="twitter:image" content={ogImage} />
   </head>
   <body>
-    <header class="site-header">
+    <header class:list={['site-header', { home: isHome }]}>
       <a class="brand" href="/">{siteTitle}</a>
       <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
@@ -87,14 +89,49 @@ const email = 'michael@lambertspace.com';
 
     <style is:global>
       :root {
+        /* ===== Light theme (default) ===== */
         --ink: #141414;
         --muted: #8a8a8a;
         --bg: #ffffff;
+        --line: rgba(0, 0, 0, 0.1);
+        --bullet: #333333;
+        --link-underline: #bbbbbb;
+        /* gantt */
+        --panel: transparent;
+        --panel-border: transparent;
+        --grid: #e4e4e4;
+        --tick: #9a9a9a;
+        --work-bar: linear-gradient(180deg, #cfcfcf, #c2c2c2);
+        --study-bar: linear-gradient(180deg, #e8e8e8, #dedede);
+        --work-label: #333333;
+        --study-label: #666666;
+        --bar-sheen: rgba(255, 255, 255, 0.45);
+        /* hero-bottom fade: transparent in light (stays a contained banner) */
+        --hero-fade: transparent;
+
         --maxw: 1200px;
         --gap: 14px;
-        /* Swap this one line to change the font everywhere (e.g. add a
-           @font-face above and set --font to its name). */
         --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      html[data-theme='dark'] {
+        /* ===== Dark theme ===== */
+        --ink: #eceef2;
+        --muted: #85878f;
+        --bg: #0a0b0e;
+        --line: rgba(255, 255, 255, 0.1);
+        --bullet: #c3c5cd;
+        --link-underline: rgba(255, 255, 255, 0.32);
+        --panel: radial-gradient(120% 140% at 70% 0%, #14151b 0%, #0a0b0f 60%, #070709 100%);
+        --panel-border: #1e1f27;
+        --grid: rgba(255, 255, 255, 0.06);
+        --tick: #63646f;
+        --work-bar: linear-gradient(180deg, #565a63, #494d56);
+        --study-bar: linear-gradient(180deg, #3d4048, #33363e);
+        --work-label: #dbdde3;
+        --study-label: #c1c3cb;
+        --bar-sheen: rgba(255, 255, 255, 0.06);
+        /* hero dissolves into the dark page */
+        --hero-fade: var(--bg);
       }
 
       * {
@@ -127,6 +164,11 @@ const email = 'michael@lambertspace.com';
       }
 
       .site-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
         max-width: var(--maxw);
         margin: 0 auto;
         padding: 26px 22px;
@@ -174,6 +216,21 @@ const email = 'michael@lambertspace.com';
         cursor: pointer;
       }
 
+      /* On the homepage the nav overlays the dark hero photo, so force light
+         nav colours there (desktop only — on mobile the nav is a solid
+         dropdown panel that follows the page). */
+      @media (min-width: 641px) {
+        .site-header.home .brand {
+          color: #fff;
+        }
+        .site-header.home .nav a {
+          color: rgba(255, 255, 255, 0.82);
+        }
+        .site-header.home .nav a:hover {
+          color: #fff;
+        }
+      }
+
       /* --- mobile nav: collapse into a dropdown menu --- */
       @media (max-width: 640px) {
         .site-header {
@@ -191,11 +248,11 @@ const email = 'michael@lambertspace.com';
           flex-direction: column;
           align-items: flex-start;
           gap: 18px;
-          background: #fff;
+          background: var(--bg);
           padding: 20px 26px;
-          border: 1px solid #ececec;
+          border: 1px solid var(--line);
           border-radius: 12px;
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
           font-size: 16px;
         }
         .nav.open {
@@ -211,7 +268,9 @@ const email = 'michael@lambertspace.com';
       main {
         max-width: var(--maxw);
         margin: 0 auto;
-        padding: 10px 22px 60px;
+        /* top padding clears the overlaid nav on inner pages; the homepage
+           hero cancels it with a matching negative margin to run behind the nav */
+        padding: 88px 22px 60px;
       }
 
       .site-footer {
