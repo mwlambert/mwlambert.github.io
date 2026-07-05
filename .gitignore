@@ -19,3 +19,6 @@ node_modules/
 
 # scratch hero candidates (pick one, copy to src/hero.jpg)
 /src/assets/heros/
+
+# source PDFs dropped into asset folders (site uses the exported PNG/JPG)
+*.pdf

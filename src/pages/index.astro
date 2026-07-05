@@ -115,7 +115,7 @@ function linkifyBullet(text, links, used) {
                       class={`bar ${lane.name === 'Study' ? 'study' : 'work'}`}
                       href={p.href}
                       style={`left:${left}%; width:${width}%; top:${top}px; --d:${delay}s; --bp:${p.pad ?? 3}px`}
-                      title={`${p.label} · ${yr(p.start)}–${p.end >= END ? 'now' : yr(p.end)}`}
+                      data-tip={`${p.label} · ${yr(p.start)}–${p.end >= END ? 'now' : yr(p.end)}`}
                     >
                       <div class="bar-fill" />
                       <span class="badge">
@@ -138,6 +138,7 @@ function linkifyBullet(text, links, used) {
           })
         }
       </div>
+      <div class="gantt-tip" id="ganttTip" hidden></div>
     </section>
 
     <!-- EXPERIENCE TIMELINE -->
@@ -304,6 +305,27 @@ function linkifyBullet(text, links, used) {
       els.forEach((el) => io.observe(el));
     }
     initReveal();
+
+    // Instant gantt tooltip (native title has a ~1s delay, which felt laggy).
+    function initGanttTip() {
+      const tip = document.getElementById('ganttTip');
+      if (!tip) return;
+      document.querySelectorAll('.chart .bar').forEach((bar) => {
+        const text = bar.getAttribute('data-tip');
+        if (!text) return;
+        bar.addEventListener('mouseenter', () => {
+          const r = bar.getBoundingClientRect();
+          tip.textContent = text;
+          tip.style.left = r.left + 15 + 'px'; // over the badge (bar's left)
+          tip.style.top = r.top + 'px';
+          tip.hidden = false;
+        });
+        bar.addEventListener('mouseleave', () => {
+          tip.hidden = true;
+        });
+      });
+    }
+    initGanttTip();
   </script>
 
   <style>
@@ -426,6 +448,32 @@ function linkifyBullet(text, links, used) {
     /* --- life timeline (gantt) --- */
     .chart {
       margin: 4px 0 52px;
+    }
+    .gantt-tip {
+      position: fixed;
+      z-index: 50;
+      transform: translate(-50%, calc(-100% - 9px));
+      background: #141414;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1;
+      padding: 6px 9px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+    .gantt-tip::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #141414;
+    }
+    .gantt-tip[hidden] {
+      display: none;
     }
 
     /* Breakout: hero + gantt run wider than the 720px reading column.
