@@ -17,7 +17,7 @@ export const lanes = [
   {
     name: 'Study',
     phases: [
-      { label: 'University of Auckland', logo: 'auckland.png', start: 2012, end: 2016.9, pad: 2, href: '#university-of-auckland' },
+      { label: 'University of Auckland', logo: 'auckland.png', start: 2012, end: 2016.45, pad: 2, href: '#university-of-auckland' },
       { label: 'Te Wānanga o Raukawa', logo: 'te-wananga.png', start: 2022, end: 2023, pad: 0, href: '#te-wananga' },
     ],
   },
@@ -27,7 +27,7 @@ export const lanes = [
       // Commented out for now — kept so they're easy to restore later.
       // { label: 'CR Automation', logo: 'cr-automation.png', start: 2012.85, end: 2013.15 },
       // { label: 'HV Power', logo: 'hv-power.png', start: 2014.85, end: 2015.9 },
-      { label: 'Rocket Lab', logo: 'rocket-lab.png', start: 2016.6, end: 2023.3, href: '#rocket-lab', pad: 5 },
+      { label: 'Rocket Lab', logo: 'rocket-lab.png', start: 2016.5, end: 2023.25, href: '#rocket-lab', pad: 5 },
       { label: 'MaiaSpace', logo: 'maiaspace.png', start: 2024.1, end: 2025.4, href: '#maiaspace', pad: 5 },
       { label: 'Norma', logo: 'norma.png', start: 2025.4, end: 2026.55, href: '#norma', pad: 5 },
     ],

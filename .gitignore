@@ -16,3 +16,6 @@ node_modules/
 # loose hero-test images in src root (keep hero.jpg / about.jpg lowercase)
 /src/*.JPG
 /src/*.JPEG
+
+# scratch hero candidates (pick one, copy to src/hero.jpg)
+/src/assets/heros/
