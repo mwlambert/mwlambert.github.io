@@ -8,6 +8,9 @@ const desc =
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 // The homepage nav sits over the dark hero image, so it always needs light text.
 const isHome = Astro.url.pathname === '/';
+// Which top-level section we're in — used to highlight the active nav link.
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href);
 // Copyright year — resolves at build time (the site rebuilds on every deploy).
 const year = new Date().getFullYear();
 // Back-to-top only helps on the long, scrollable pages — skip it on About.
@@ -25,6 +28,11 @@ const email = 'michael@lambertspace.com';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Mark JS available before body paints, so progressive-enhancement
+         styles (e.g. fade-in photos) never leave content hidden without JS. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
     <title>{pageTitle}</title>
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
@@ -58,9 +66,9 @@ const email = 'michael@lambertspace.com';
         </svg>
       </button>
       <nav class="nav" id="nav">
-        <a href="/projects/">Projects</a>
-        <a href="/photography/">Photography</a>
-        <a href="/about/">About</a>
+        <a href="/projects/" aria-current={isActive('/projects/') ? 'page' : undefined}>Projects</a>
+        <a href="/photography/" aria-current={isActive('/photography/') ? 'page' : undefined}>Photography</a>
+        <a href="/about/" aria-current={isActive('/about/') ? 'page' : undefined}>About</a>
       </nav>
     </header>
 
@@ -131,11 +139,12 @@ const email = 'michael@lambertspace.com';
         --panel-border: #1e1f27;
         --grid: rgba(255, 255, 255, 0.06);
         --tick: #63646f;
-        --work-bar: linear-gradient(180deg, #565a63, #494d56);
-        --study-bar: linear-gradient(180deg, #3d4048, #33363e);
+        --work-bar: rgba(255, 255, 255, 0.03);
+        --study-bar: rgba(255, 255, 255, 0.015);
         --work-label: #dbdde3;
         --study-label: #c1c3cb;
-        --bar-sheen: rgba(255, 255, 255, 0.06);
+        --bar-sheen: transparent;
+        --bar-border: 1px solid rgba(255, 255, 255, 0.26);
         /* hero dissolves into the dark page */
         --hero-fade: var(--bg);
       }
@@ -189,7 +198,7 @@ const email = 'michael@lambertspace.com';
       }
 
       .brand {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 400;
         letter-spacing: 0.01em;
       }
@@ -197,8 +206,8 @@ const email = 'michael@lambertspace.com';
       .nav {
         display: flex;
         align-items: center;
-        gap: 18px;
-        font-size: 13px;
+        gap: 20px;
+        font-size: 14px;
       }
 
       .nav a {
@@ -210,6 +219,16 @@ const email = 'michael@lambertspace.com';
 
       .nav a:hover {
         color: var(--ink);
+      }
+
+      /* Current page — brighter, with a subtle underline. (The homepage isn't
+         in the nav, so an active link only ever appears on the light pages.) */
+      .nav a[aria-current='page'] {
+        color: var(--ink);
+        text-decoration: underline;
+        text-underline-offset: 5px;
+        text-decoration-thickness: 1.5px;
+        text-decoration-color: var(--line);
       }
 
       .nav-toggle {
