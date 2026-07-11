@@ -1,0 +1,168 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { photos } from '../lib/photos.js';
+
+// Row-major split into two columns: even index → left, odd → right, so the grid
+// reads 1 2 / 3 4 / 5 6 down the page (not column-major). Alternating also keeps
+// consecutive portraits on opposite sides, so they never pile up against the
+// centre. Each item keeps its original index for the gallery link + mobile order.
+const withIndex = photos.map((p, i) => ({ ...p, i }));
+const left = withIndex.filter((_, i) => i % 2 === 0);
+const right = withIndex.filter((_, i) => i % 2 === 1);
+
+// Lateral jitter: inset each narrow photo from its outer column edge by a
+// varying %, so portraits scatter horizontally instead of forming a tidy
+// column. Deterministic (keyed off index) so it's stable across builds, and
+// always biased outward so the centre channel never gets crowded. Landscapes
+// stay full-width. Squares get a smaller max inset (they're wider).
+const LAT = [0, 22, 8, 30, 4, 18, 12, 26, 2, 16, 10, 24];
+function latFor(p) {
+  if (p.orientation === 'landscape') return 0;
+  const raw = LAT[p.i % LAT.length];
+  return p.orientation === 'square' ? Math.min(raw, 12) : raw;
+}
+---
+
+<Base title="Travel" description="Travel photos by Michael Lambert.">
+  {
+    photos.length === 0 ? (
+      <p class="empty">
+        No photos yet. Drop images into <code>src/photos/</code> and they'll appear
+        here, newest first.
+      </p>
+    ) : (
+      <div class="gallery">
+        {[left, right].map((col, c) => (
+          <div class:list={['col', c === 0 ? 'col-left' : 'col-right']}>
+            {col.map((p) => (
+              <a
+                class:list={['shot', `is-${p.orientation}`]}
+                href={`/travel/gallery/#${p.i}`}
+                style={`order:${p.i};--lat:${latFor(p)}%`}
+                aria-label="Open photo"
+              >
+                <Image
+                  src={p.image}
+                  alt=""
+                  widths={[600, 900, 1400]}
+                  sizes="(max-width: 700px) 100vw, 580px"
+                  loading="lazy"
+                />
+              </a>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  <style>
+    /* Two explicit columns we control (not CSS `columns`, which is column-major
+       and clusters portraits). Row-major order comes from the alternating split;
+       each column is its own loose vertical masonry, so the two stay staggered. */
+    .gallery {
+      display: flex;
+      gap: 96px;
+      max-width: var(--maxw); /* align edges with the nav */
+      margin: 40px auto 0;
+    }
+    .col {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Narrow photos hug the OUTER edge of each column, so the centre channel
+       stays open and portraits never crowd the gutter. Landscapes fill the
+       column, so alignment is moot for them. */
+    .col-left {
+      align-items: flex-start;
+    }
+    .col-right {
+      align-items: flex-end;
+    }
+    /* Lateral jitter (see latFor in the frontmatter): inset from the outer edge
+       so narrow photos scatter horizontally instead of lining up. */
+    .col-left .shot {
+      margin-left: var(--lat, 0);
+    }
+    .col-right .shot {
+      margin-right: var(--lat, 0);
+    }
+
+    .shot {
+      display: block;
+      width: 100%;
+      margin-bottom: 96px;
+    }
+    .shot :global(img) {
+      display: block;
+      width: 100%;
+      transition: opacity 0.2s ease;
+    }
+    .shot:hover :global(img) {
+      opacity: 0.9;
+    }
+
+    /* Orientation-driven sizing: landscapes wide, portraits narrow (≈half). */
+    .shot.is-landscape {
+      width: 100%;
+    }
+    .shot.is-square {
+      width: 78%;
+    }
+    .shot.is-portrait {
+      width: 60%;
+    }
+
+    /* Irregular vertical rhythm so the columns stay offset / hand-arranged. */
+    .col .shot:nth-child(3n) {
+      margin-bottom: 148px;
+    }
+    .col .shot:nth-child(4n) {
+      margin-bottom: 116px;
+    }
+    /* Nudge the right column down a touch so the two don't start level. */
+    .col-right {
+      margin-top: 72px;
+    }
+
+    @media (max-width: 640px) {
+      /* Phones: one column in the original captions.js order. `display:contents`
+         promotes every .shot to be a direct flex child of .gallery, and the
+         inline `order:{i}` re-sorts them into original order. */
+      .gallery {
+        flex-direction: column;
+        gap: 0;
+        max-width: 100%;
+      }
+      .col,
+      .col-right {
+        display: contents;
+        margin-top: 0;
+      }
+      .shot,
+      .shot.is-landscape,
+      .shot.is-square,
+      .shot.is-portrait {
+        width: 100%;
+        margin-bottom: 64px;
+      }
+      /* drop the desktop lateral jitter when stacked full-width */
+      .gallery .col-left .shot,
+      .gallery .col-right .shot {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    .empty {
+      color: var(--muted);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+  </style>
+</Base>

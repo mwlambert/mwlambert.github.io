@@ -14,7 +14,9 @@ const isActive = (href: string) => path === href || path.startsWith(href);
 // Copyright year — resolves at build time (the site rebuilds on every deploy).
 const year = new Date().getFullYear();
 // Back-to-top only helps on the long, scrollable pages — skip it on About.
-const showTop = Astro.url.pathname !== '/about/';
+// Back-to-top only helps on the long, scrollable pages — skip it on About and
+// the single-screen photo gallery viewer.
+const showTop = !['/about/', '/travel/gallery/'].includes(Astro.url.pathname);
 const ogImage = Astro.site ? new URL('/og.jpg', Astro.site).href : '/og.jpg';
 
 // Edit these lines to change your contact links everywhere.
@@ -67,7 +69,7 @@ const email = 'michael@lambertspace.com';
       </button>
       <nav class="nav" id="nav">
         <a href="/projects/" aria-current={isActive('/projects/') ? 'page' : undefined}>Projects</a>
-        <a href="/photography/" aria-current={isActive('/photography/') ? 'page' : undefined}>Photography</a>
+        <a href="/travel/" aria-current={isActive('/travel/') ? 'page' : undefined}>Travel</a>
         <a href="/about/" aria-current={isActive('/about/') ? 'page' : undefined}>About</a>
       </nav>
     </header>
