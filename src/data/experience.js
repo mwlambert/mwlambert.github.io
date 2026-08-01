@@ -8,34 +8,24 @@
 // there shows as a grid under that role. No filename list needed. Then git push.
 // (The `images: []` fields below are no longer used.)
 
-// ⇩ THE P78 SWITCH ⇩
-// Flip to `true` at end of July to launch P78: it appears at the top of the CV
-// (and on the gantt), and Norma flips from "Present" to "ended July 2026" with
-// past-tense bullets. One line is the whole switch — then git push.
-export const P78_LAUNCHED = false;
-
 export const experience = [
-  ...(P78_LAUNCHED
-    ? [
-        {
-          company: 'P78 Space',
-          logo: 'p78-space.png',
-          url: 'https://p78space.com',
-          duration: 'Aug 2026 – Present',
-          roles: [
-            {
-              title: 'Co-founder',
-              dates: 'August 2026 – Present',
-              location: '',
-              bullets: [
-                'Developing modern propulsion for the next generation of spaceflight.',
-              ],
-              images: [],
-            },
-          ],
-        },
-      ]
-    : []),
+  {
+    company: 'P78 Space',
+    logo: 'p78-space.png',
+    url: 'https://p78space.com',
+    duration: 'Aug 2026 – Present',
+    roles: [
+      {
+        title: 'Co-founder',
+        dates: 'August 2026 – Present',
+        location: '',
+        bullets: [
+          'Developing modern propulsion for the next generation of spaceflight.',
+        ],
+        images: [],
+      },
+    ],
+  },
   {
     company: 'Spencer St.',
     logo: 'spencer-st.png',
@@ -58,30 +48,19 @@ export const experience = [
     company: 'Norma',
     logo: 'norma.png',
     url: 'https://norma.tech',
-    duration: P78_LAUNCHED ? 'May 2025 – Jul 2026' : 'May 2025 – Present',
+    duration: 'May 2025 – Jul 2026',
     roles: [
       {
         title: 'Senior Mechanical Engineer',
-        dates: P78_LAUNCHED
-          ? 'May 2025 – July 2026 · 1 yr 2 mos'
-          : 'May 2025 – Present · 1 yr 2 mos',
+        dates: 'May 2025 – July 2026 · 1 yr 2 mos',
         location: 'Paris, France',
-        // Past tense once you've left (P78_LAUNCHED); present tense while still there.
-        bullets: P78_LAUNCHED
-          ? [
-              'Led the mechanical design and development of a novel Direct Air Capture (DAC) system.',
-              'Drove end-to-end prototyping and hardware iteration.',
-              'Performed mechanical simulation and system modelling, validating performance and reliability through testing.',
-              'Managed cross-functional timelines from concept to deployment.',
-              'Developed in-house tools for experiment automation and data analysis.',
-            ]
-          : [
-              'Leading the mechanical design and development of a novel Direct Air Capture (DAC) system.',
-              'Driving end-to-end prototyping and hardware iteration.',
-              'Performing mechanical simulation and system modelling, validating performance and reliability through testing.',
-              'Managing cross-functional timelines from concept to deployment.',
-              'Developing in-house tools for experiment automation and data analysis.',
-            ],
+        bullets: [
+          'Led the mechanical design and development of a novel Direct Air Capture (DAC) system.',
+          'Drove end-to-end prototyping and hardware iteration.',
+          'Performed mechanical simulation and system modelling, validating performance and reliability through testing.',
+          'Managed cross-functional timelines from concept to deployment.',
+          'Developed in-house tools for experiment automation and data analysis.',
+        ],
         images: [],
       },
     ],

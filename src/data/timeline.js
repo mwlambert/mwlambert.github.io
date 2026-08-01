@@ -3,12 +3,10 @@
 // `logo` reuses the same files as experience.js; schools need their own logos
 // in src/assets/logos/. Until a logo is dropped in, a monogram badge shows.
 
-import { P78_LAUNCHED } from './experience.js';
-
 export const START = 2012;
-// Once P78 launches, extend a little past "now" so Norma can end in July and the
-// present-day bars still run on; otherwise "now" is ~mid-2026 (the edge).
-export const END = P78_LAUNCHED ? 2026.9 : 2026.5;
+// Extend a little past "now" so Norma can end in July and the present-day bars
+// still run on.
+export const END = 2026.9;
 
 export const ticks = [2012, 2014, 2016, 2018, 2020, 2022, 2024, 2026];
 
@@ -33,7 +31,7 @@ export const lanes = [
       // { label: 'HV Power', logo: 'hv-power.png', start: 2014.85, end: 2015.9 },
       { label: 'Rocket Lab', logo: 'rocket-lab.png', start: 2016.5, end: 2023.25, href: '#rocket-lab', pad: 5 },
       { label: 'MaiaSpace', logo: 'maiaspace.png', start: 2024.1, end: 2025.4, href: '#maiaspace', pad: 5 },
-      { label: 'Norma', logo: 'norma.png', start: 2025.4, end: P78_LAUNCHED ? 2026.55 : END, href: '#norma', pad: 5 },
+      { label: 'Norma', logo: 'norma.png', start: 2025.4, end: 2026.55, href: '#norma', pad: 5 },
     ],
   },
   {
@@ -41,9 +39,7 @@ export const lanes = [
     phases: [
       // Set `labelLeft: true` to show the name to the left of the badge.
       { label: 'Spencer St.', logo: 'spencer-st.png', start: 2024.92, end: END, href: '#spencer-st', pad: 4 },
-      ...(P78_LAUNCHED
-        ? [{ label: 'P78 Space', logo: 'p78-space.png', start: 2026.62, end: END, href: '#p78-space' }]
-        : []),
+      { label: 'P78 Space', logo: 'p78-space.png', start: 2026.62, end: END, href: '#p78-space' },
     ],
   },
 ];
