@@ -20,7 +20,7 @@ export const experience = [
         dates: 'August 2026 – Present',
         location: '',
         bullets: [
-          'Developing modern propulsion for the next generation of spaceflight.',
+          'Building scheduled Earth-Moon cargo delivery.',
         ],
         images: [],
       },
@@ -30,15 +30,15 @@ export const experience = [
     company: 'Spencer St.',
     logo: 'spencer-st.png',
     url: '',
-    links: [{ label: 'Prompt', url: 'https://reallifeontap.com' }],
+    links: [{ label: 'Catchup', url: 'https://keentocatchup.com' }],
     duration: 'Dec 2024 – Present',
     roles: [
       {
-        title: 'Co-founder & Developer',
+        title: 'Co-founder',
         dates: 'December 2024 – Present · 1 yr 7 mos',
         location: '',
         bullets: [
-          'Building Prompt, a social, social media app — beta released on TestFlight.',
+          'Built Catchup, a social, social media app — live on the App Store and Google Play.',
         ],
         images: [],
       },
